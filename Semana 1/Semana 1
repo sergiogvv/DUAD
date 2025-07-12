@@ -1,0 +1,58 @@
+Ejercicios
+
+1. Cree un algoritmo para ver un video en Youtube. Sea lo más especifico posible.
+
+*Respuesta:*
+
+1. Inicio
+2. Si tiene computadora:
+    1. Ingresar a YouTube.com
+3. Sino, 
+    
+    si tiene smartphone, 
+    
+    o si tiene tablet, 
+    
+    o si tiene smart TV:
+    
+    1. Ingresar a la app de YouTube
+4. Sino, 
+    1. Fin
+5. Si le llama la atención un video de su home feed:
+    1. Reproducir video de su preferencia
+6. Sino:
+    1. Busque algun video en la barra de busqueda
+    2. Reproducir video
+7. Fin
+
+2. Cree un algoritmo que describa su rutina diaria. Use condiciones, condiciones multiples y ciclos.
+
+*Respuesta:*
+
+1. Inicio
+2. Levantarse
+3. Bañarse
+4. Preparar desayuno
+5. Desayunar 
+6. Entrar a oficina
+7. Encender computadora
+8. Revisar correo electronico
+9. Si tengo nuevos correos sin leer y únicamente dirigidos a mí:
+    1. Leer correo
+    2. Contestar correo
+10. Sino si tengo nuevos correos sin leer y estoy en el cc: o si tengo nuevos correos sin leer y estoy dentro de una lista:
+    1. Leer correo
+    2. Borrar correo
+11. Sino borrar correos leidos
+12. Por cada item de la lista de trabajo:
+    1. Revisar
+    2. Si me corresponde a mi:
+        1. Mientras no esté terminado:
+            1. Procesarlo 
+    3. Sino asignar a alguien más
+13. Apagar computadora
+14. Hacer ejercicio
+15. Preparar cena
+16. Ver television
+17. Dormir
+18. fin

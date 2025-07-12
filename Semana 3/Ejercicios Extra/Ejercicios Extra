@@ -1,0 +1,16 @@
+⭐ **Ejercicios Extra**
+
+1. Cree un diagrama de flujo que le pida 5 números al usuario y muestre el mayor.
+    1. *Ejemplos*:
+        1. 4, 76, 43, 6, 8 → 76
+        2. 1, 2, 3, 6, 7 → 7
+        3. 2132, 4355, 1132, 2323, 1214 → 4355
+2. Cree un diagrama de flujo que le pida un numero al usuario y muestre “*Fizz*” si es divisible entre 3, “*Buzz*” si es divisible entre 5, y “*FizzBuzz*” si es divisible entre ambos.
+    1. *Ejemplos*:
+        1. 33 → Fizz
+        2. 25 → Buzz
+        3. 30 → FizzBuzz
+3. Cree un diagrama de flujo que le pida 100 números al usuario y muestre la suma de todos.
+4. Cree un diagrama de flujo que le pida 100 números al usuario y muestre el mayor de todos.
+    1. *Ejemplos*:
+        1. 4, 76, 43, 6, 8 → 76
