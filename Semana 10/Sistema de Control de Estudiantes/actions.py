@@ -82,24 +82,41 @@ def student_avg_grade(student):
 	return avg_grade
 
 
+def sort_students_by_avg_grade(student_grade_list):
+    # Outer loop to iterate through the list n times
+    for n in range(len(student_grade_list)-1,0, -1):
+        # Initialize swapped to track if any swaps occur
+        swapped = False
+        # Inner loop to compare adjacent elements
+        for i in range(n):
+            if student_avg_grade(student_grade_list[i]) < student_avg_grade(student_grade_list[i+1]):
+                # Swap elements if they are in the wrong order
+                student_grade_list[i], student_grade_list[i+1] = student_grade_list[i+1], student_grade_list[i]
+                # Mark that a swap has occurred
+                swapped = True
+        # If no swaps occurred, the list is already sorted
+        if not swapped:
+            break
+    return student_grade_list
+
+
 def top_3_students_by_avg_grade(student_grade_list):
     list_of_avg_grades_by_student = []
-    max_avg = 0
-    for student in student_grade_list: 
+    sorted_student_grades = sort_students_by_avg_grade(student_grade_list)
+    for student in sorted_student_grades: 
         dict_student_with_avg_grade = {}
         student_avg = student_avg_grade(student)
-        if student_avg > max_avg:
-            max_avg = student_avg
-            dict_student_with_avg_grade['name'] = student['name']
-            dict_student_with_avg_grade['avg'] = student_avg
-            list_of_avg_grades_by_student.insert(0,dict_student_with_avg_grade)
-        else:
-            dict_student_with_avg_grade['name'] = student['name']
-            dict_student_with_avg_grade['avg'] = student_avg
-            list_of_avg_grades_by_student.append(dict_student_with_avg_grade)
-    print(f'Nombre: {list_of_avg_grades_by_student[0]['name']}\tPromedio: {list_of_avg_grades_by_student[0]['avg']}')
-    print(f'Nombre: {list_of_avg_grades_by_student[1]['name']}\tPromedio: {list_of_avg_grades_by_student[1]['avg']}')
-    print(f'Nombre: {list_of_avg_grades_by_student[2]['name']}\tPromedio: {list_of_avg_grades_by_student[2]['avg']}\n')
+        dict_student_with_avg_grade['name'] = student['name']
+        dict_student_with_avg_grade['avg'] = student_avg
+        list_of_avg_grades_by_student.append(dict_student_with_avg_grade)
+    print()
+    if len(list_of_avg_grades_by_student) < 3:
+        for i in range(len(list_of_avg_grades_by_student)):         
+            print(f'Nombre: {list_of_avg_grades_by_student[i]['name']}\tPromedio: {list_of_avg_grades_by_student[i]['avg']}')
+    else:
+        for i in range(3):
+            print(f'Nombre: {list_of_avg_grades_by_student[i]['name']}\tPromedio: {list_of_avg_grades_by_student[i]['avg']}')
+    print()
 
 
 def all_grade_avg(student_grade_list):
@@ -109,14 +126,6 @@ def all_grade_avg(student_grade_list):
         sum_student_avg+=student_avg
     avg_grade_for_all_students = sum_student_avg/len(student_grade_list)
     print(f'Nota promedio entre las notas de todos los estudiantes: {avg_grade_for_all_students}')
-
-
-n=int(input('numero de estudiantes: '))
-lista = enter_information_4_all_students(n)
-view_student_grades(lista)
-print()
-top_3_students_by_avg_grade(lista)
-all_grade_avg(lista)
 
 
 

@@ -1,4 +1,4 @@
-
+from actions import enter_information_4_all_students, view_student_grades, top_3_students_by_avg_grade, all_grade_avg
 
 def valid_menu_option(option):
     try:
@@ -12,7 +12,6 @@ def valid_menu_option(option):
 
 
 def valid_number_of_students(n):
-    while True:
         try:
             n = int(n)
             if n > 0:
@@ -20,41 +19,65 @@ def valid_number_of_students(n):
             else:
                 raise ValueError()
         except:
-            print('Ingrese un numero mayor a cero')
+            print('Valor inválido: Ingrese un numero mayor a cero')
 
-        
-def execute_option(option):
-    if option == 1:
+
+def print_menu():
+    print('\nMenu de opciones:\n')
+    print('1. Ingresar información de estudiantes')
+    print('2. Ver la información de todos los estudiantes ingresados')
+    print('3. Ver el top 3 de los estudiantes con la mejor nota promedio')
+    print('4. Ver la nota promedio entre las notas de todos los estudiantes')
+    print('5. Exportar todos los datos actuales a un archivo CSV')
+    print('6. Importar los datos de un archivo CSV previamente exportado')
+    print('7. Salir del programa\n')
+
+
+
+def execute_menu():
+    student_grade_list = []
+    while True:
+        print_menu()
         while True:
-            n=input('Ingrese la cantidad de estudiantes cuya informacion desea ingresar: ')
-            if valid_number_of_students(n):
-                n=int(n)
-                #enter_information_4_all_students(n)
+            option = input('Ingrese una opción: ')
+            if valid_menu_option(option):
+                option = int(option)
                 break
-    if option == 2:
-        pass
-    if option == 3:
-        pass
-    if option == 4:
-        pass
-    if option == 5:
-        pass
-    if option == 6:
-        pass
-    else:
-        exit()   
+        if option == 1:
+            while True:
+                n=input('Ingrese la cantidad de estudiantes cuya informacion desea ingresar: ')
+                if valid_number_of_students(n):
+                    n=int(n)
+                    student_grade_list += enter_information_4_all_students(n)
+                    break
+        if option == 2:
+            view_student_grades(student_grade_list)
+        if option == 3:
+            top_3_students_by_avg_grade(student_grade_list)
+        if option == 4:
+            all_grade_avg(student_grade_list)
+        if option == 5:
+            continue
+        if option == 6:
+            pass
+        if option == 7:
+            exit() 
+        else:
+            input('\n...presione cualquier tecla para continuar...')
+        
+
+
+execute_menu()
 
 
 
-
-
-while True:
-    option = input('Ingrese una opción: ')
-    if valid_menu_option(option):
-        option = int(option)
-        break
-while True:
-    n=input('numero de estudiantes: ')
-    if valid_number_of_students(n):
-        n=int(n)
-        break
+# while True:
+#     option = input('Ingrese una opción: ')
+#     if valid_menu_option(option):
+#         option = int(option)
+#         break
+# while True:
+#     n=input('numero de estudiantes: ')
+#     if valid_number_of_students(n):
+#         n=int(n)
+#         break
