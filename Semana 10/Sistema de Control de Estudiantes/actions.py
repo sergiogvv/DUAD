@@ -1,3 +1,7 @@
+from colorama import Fore, init
+init(autoreset=True)  # Initialize colorama for Windows
+
+
 def enter_student():
     name = input('\nNombre completo: ')
     grade_and_section = input('Seccion: ') 
@@ -41,7 +45,7 @@ def check_if_valid(number):
             else:
                 return True
         except:
-            print('Error: Valor inválido, ingrese un numero ente 0 y 100')        
+            print(Fore.RED +'Error: Valor inválido, ingrese un numero ente 0 y 100')        
 
 
 def enter_information_4_all_students(number_of_students):
@@ -59,7 +63,7 @@ def enter_information_4_all_students(number_of_students):
             else:
                 raise ValueError()
         except:
-            print('Error: Respuesta inválida, digite "s" para ingresar otro estudiante, "n" para no agregar mas')
+            print(Fore.RED +'Error: Respuesta inválida, digite "s" para ingresar otro estudiante, "n" para no agregar mas')
     return student_grade_list
 
 

@@ -1,5 +1,8 @@
 from actions import enter_information_4_all_students, view_student_grades, top_3_students_by_avg_grade, all_grade_avg, spanish_headers, english_headers
 from data import import_csv_file, write_csv_file
+from colorama import Fore, init
+init(autoreset=True)  # Initialize colorama for Windows
+
 
 def valid_menu_option(option):
     try:
@@ -9,7 +12,7 @@ def valid_menu_option(option):
         else:
             raise ValueError()
     except:
-        print('Error: Opcion inválida, ingrese un numero ente 1 y 7')
+        print(Fore.RED +'Error: Opcion inválida, ingrese un numero ente 1 y 7')
 
 
 def valid_number_of_students(n):
@@ -20,7 +23,7 @@ def valid_number_of_students(n):
             else:
                 raise ValueError()
         except:
-            print('Error: Valor inválido: Ingrese un numero mayor a cero')
+            print(Fore.RED +'Error: Valor inválido: Ingrese un numero mayor a cero')
 
 
 def print_menu():
@@ -54,17 +57,17 @@ def execute_menu():
             if  student_grade_list:
                 view_student_grades(student_grade_list)
             else: 
-                print('\nError: Primero debe ingresar o importar la información de estudiantes')
+                print(Fore.RED +'\nError: Primero debe ingresar o importar la información de estudiantes')
         if option == 3:
             if student_grade_list:
                 top_3_students_by_avg_grade(student_grade_list)
             else:
-                print('\nError: Primero debe ingresar o importar la información de estudiantes')
+                print(Fore.RED +'\nError: Primero debe ingresar o importar la información de estudiantes')
         if option == 4:
             if student_grade_list:
                 all_grade_avg(student_grade_list)
             else:
-                print('\nError: Primero debe ingresar o importar la información de estudiantes')   
+                print(Fore.RED +'\nError: Primero debe ingresar o importar la información de estudiantes')   
         if option == 5:
             if student_grade_list:
                 headers = ['Nombre', 'Seccion', 'Español', 'Inglés', 'Sociales', 'Ciencias']
@@ -72,18 +75,18 @@ def execute_menu():
                 file_path = 'C:/Users/sergi/OneDrive/Documents/Lyfter/Repos/DUAD/DUAD/Semana 10/Sistema de Control de Estudiantes/Data/Student_Info.csv'
                 write_csv_file(file_path, data , headers)
             else:
-                print('\nError: Primero debe ingresar o importar la información de estudiantes') 
+                print(Fore.RED +'\nError: Primero debe ingresar o importar la información de estudiantes') 
         if option == 6:
             file_path = 'C:/Users/sergi/OneDrive/Documents/Lyfter/Repos/DUAD/DUAD/Semana 10/Sistema de Control de Estudiantes/Data/Student_Info.csv'
             try:
                 student_grade_list = import_csv_file(file_path)
                 student_grade_list = english_headers(student_grade_list)
             except:
-                print('\nError: Archivo de datos no encontrado, debe ingresar información y luego expotar los datos')
+                print(Fore.RED +'\nError: Archivo de datos no encontrado, debe ingresar información y luego expotar los datos')
         if option == 7:
             exit() 
         else:
-            input('\n...presione la tecla ENTER para continuar...')
+            input(Fore.LIGHTGREEN_EX +'\n...presione la tecla ENTER para continuar...')
 
 
 
