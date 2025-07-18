@@ -41,7 +41,7 @@ def check_if_valid(number):
             else:
                 return True
         except:
-            print('Valor inválido, ingrese un numero ente 0 y 100')        
+            print('Error: Valor inválido, ingrese un numero ente 0 y 100')        
 
 
 def enter_information_4_all_students(number_of_students):
@@ -59,12 +59,29 @@ def enter_information_4_all_students(number_of_students):
             else:
                 raise ValueError()
         except:
-            print('Respuesta inválida, digite "s" para ingresar otro estudiante, "n" para no agregar mas')
+            print('Error: Respuesta inválida, digite "s" para ingresar otro estudiante, "n" para no agregar mas')
     return student_grade_list
 
 
-def view_student_grades(student_grade_list):
+def english_headers(student_grade_list):
+    english_dict = {} #to be used to show information in english
+    student_grade_list_ENG_headers = [] #to be used to show information in english
+    for student in student_grade_list:
+        english_dict = {
+        'name': student['Nombre'],
+        'section': student['Seccion'],
+        'spanish': float(student['Español']),
+        'english': float(student['Inglés']),
+        'social_s': float(student['Sociales']),
+        'science': float(student['Ciencias'])
+        } 
+        student_grade_list_ENG_headers.append(english_dict)
+    return student_grade_list_ENG_headers
+
+
+def spanish_headers(student_grade_list):
     spanish_dict = {} #to be used to show information in spanish
+    student_grade_list_ESP_headers = [] #to be used to show information in spanish
     for student in student_grade_list:
         spanish_dict = {  
         'Nombre': student['name'],
@@ -74,7 +91,13 @@ def view_student_grades(student_grade_list):
         'Sociales': student['social_s'],
         'Ciencias': student['science'],
         }
-        print(spanish_dict)
+        student_grade_list_ESP_headers.append(spanish_dict)
+    return student_grade_list_ESP_headers
+
+def view_student_grades(student_grade_list):
+    dict_print = spanish_headers(student_grade_list)
+    for student in dict_print:
+        print(student)
 
 
 def student_avg_grade(student):
@@ -126,8 +149,5 @@ def all_grade_avg(student_grade_list):
         sum_student_avg+=student_avg
     avg_grade_for_all_students = sum_student_avg/len(student_grade_list)
     print(f'Nota promedio entre las notas de todos los estudiantes: {avg_grade_for_all_students}')
-
-
-
 
 

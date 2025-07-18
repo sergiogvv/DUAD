@@ -9,25 +9,7 @@ def main():
     print(' Sistema de Control de Estudiantes')
     print('-----------------------------------')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    execute_menu()
 
 
 

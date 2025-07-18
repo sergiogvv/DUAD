@@ -1,4 +1,5 @@
-from actions import enter_information_4_all_students, view_student_grades, top_3_students_by_avg_grade, all_grade_avg
+from actions import enter_information_4_all_students, view_student_grades, top_3_students_by_avg_grade, all_grade_avg, spanish_headers, english_headers
+from data import import_csv_file, write_csv_file
 
 def valid_menu_option(option):
     try:
@@ -8,7 +9,7 @@ def valid_menu_option(option):
         else:
             raise ValueError()
     except:
-        print('Opcion inválida, ingrese un numero ente 1 y 7')
+        print('Error: Opcion inválida, ingrese un numero ente 1 y 7')
 
 
 def valid_number_of_students(n):
@@ -19,7 +20,7 @@ def valid_number_of_students(n):
             else:
                 raise ValueError()
         except:
-            print('Valor inválido: Ingrese un numero mayor a cero')
+            print('Error: Valor inválido: Ingrese un numero mayor a cero')
 
 
 def print_menu():
@@ -31,7 +32,6 @@ def print_menu():
     print('5. Exportar todos los datos actuales a un archivo CSV')
     print('6. Importar los datos de un archivo CSV previamente exportado')
     print('7. Salir del programa\n')
-
 
 
 def execute_menu():
@@ -51,23 +51,43 @@ def execute_menu():
                     student_grade_list += enter_information_4_all_students(n)
                     break
         if option == 2:
-            view_student_grades(student_grade_list)
+            if  student_grade_list:
+                view_student_grades(student_grade_list)
+            else: 
+                print('\nError: Primero debe ingresar o importar la información de estudiantes')
         if option == 3:
-            top_3_students_by_avg_grade(student_grade_list)
+            if student_grade_list:
+                top_3_students_by_avg_grade(student_grade_list)
+            else:
+                print('\nError: Primero debe ingresar o importar la información de estudiantes')
         if option == 4:
-            all_grade_avg(student_grade_list)
+            if student_grade_list:
+                all_grade_avg(student_grade_list)
+            else:
+                print('\nError: Primero debe ingresar o importar la información de estudiantes')   
         if option == 5:
-            continue
+            if student_grade_list:
+                headers = ['Nombre', 'Seccion', 'Español', 'Inglés', 'Sociales', 'Ciencias']
+                data = spanish_headers(student_grade_list)
+                file_path = 'C:/Users/sergi/OneDrive/Documents/Lyfter/Repos/DUAD/DUAD/Semana 10/Sistema de Control de Estudiantes/Data/Student_Info.csv'
+                write_csv_file(file_path, data , headers)
+            else:
+                print('\nError: Primero debe ingresar o importar la información de estudiantes') 
         if option == 6:
-            pass
+            file_path = 'C:/Users/sergi/OneDrive/Documents/Lyfter/Repos/DUAD/DUAD/Semana 10/Sistema de Control de Estudiantes/Data/Student_Info.csv'
+            try:
+                student_grade_list = import_csv_file(file_path)
+                student_grade_list = english_headers(student_grade_list)
+            except:
+                print('\nError: Archivo de datos no encontrado, debe ingresar información y luego expotar los datos')
         if option == 7:
             exit() 
         else:
-            input('\n...presione cualquier tecla para continuar...')
-        
+            input('\n...presione la tecla ENTER para continuar...')
 
 
-execute_menu()
+
+
 
 
 
