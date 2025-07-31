@@ -1,35 +1,36 @@
 from datetime import date
 
 def log_call(func):
-    def wrapper(*args):
-        print(f'{func}')
-        for index, arg in enumerate(args):
-            print(f"Arg {index}: {arg}")
-        print(date.today())
-        func(*args)
+    def wrapper(*args): 
+        print(f'function: {func.__name__} - args: {args} - {date.today()} - Resultado: {func(*args)} ')
+        return func(*args)
     return wrapper
 
 
 def validate_numbers(func):
     def wrapper(*args):
-        func(*args)
+        result = func(*args)
         try:
             for arg in args:
                 if isinstance(arg, int) == False and isinstance(arg, float) == False :
                     raise ValueError()
         except:
             print('Error: Esta funcion posee argumentos que no son numeros')
+        return result 
     return wrapper
 
 
 @validate_numbers
 @log_call
 def multiply(number_1,number_2):
-    product = number_1*number_2
-    print(f'Resultado {product}')
+    return number_1*number_2
 
 
+#En este ejemplo se observo que cuando el return no se incluia dentro de la funcion wrapper, su retorno no se guardaba en memoria haciendo que el resultado de la funcion decorada fuera None
 
-multiply('k',4)
+
+print(f'Resultado {multiply('k',4)}')
 print('\n\n')
-multiply(3,4)
+
+product =multiply(3,4)
+print(f'Restultado {product}')
