@@ -23,7 +23,6 @@ my_other_number = 5
 my_string = 'Hola'
 my_2nd_string = ' mundo!'
 
-age_and_experience(my_birthday,my_experience)
 print()
 add(my_number,my_other_number)
 print()
