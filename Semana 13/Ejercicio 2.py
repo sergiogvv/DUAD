@@ -10,14 +10,7 @@ def validate_numbers(func):
                     raise ValueError('Esta funcion posee argumentos que no son numeros')
             func(*args) # Primero se hace la validacion, despues se ejecuta la func(*args)
     return wrapper
-
-
-@validate_numbers
-def age_and_experience(date_of_birth,date_of_first_job):
-    today = date.today()
-    age = today.year - date_of_birth.year - ((today.month, today.day) < (date_of_birth.month, date_of_birth.day))
-    experience = today.year - date_of_first_job.year - ((today.month, today.day) < (date_of_first_job.month, date_of_first_job.day))
-    print(f'Su edad es {age} años y su experiencia es {experience} años')   
+   
 
 @validate_numbers
 def add(a,b):
@@ -25,9 +18,6 @@ def add(a,b):
     print (f'{a}+{b} = {add}')
 
 
-
-my_birthday = date(1985,3,20)
-my_experience = date(2011,2,15)
 my_number = 5.5
 my_other_number = 5
 my_string = 'Hola'
