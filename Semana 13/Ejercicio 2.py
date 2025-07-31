@@ -5,13 +5,10 @@ from datetime import date
 
 def validate_numbers(func):
     def wrapper(*args):
-        func(*args)
-        try:
             for arg in args:
                 if isinstance(arg, int) == False and isinstance(arg, float) == False :
-                    raise ValueError()
-        except:
-            print('Error: Esta funcion posee argumentos que no son numeros')
+                    raise ValueError('Esta funcion posee argumentos que no son numeros')
+            func(*args) # Primero se hace la validacion, despues se ejecuta la func(*args)
     return wrapper
 
 
