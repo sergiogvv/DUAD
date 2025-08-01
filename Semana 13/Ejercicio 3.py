@@ -9,11 +9,11 @@ from datetime import date
 
 def validate_age(func):
     def wrapper(user,*args):
-        func(user,*args)
         if user.age < 18:
-            print('Acceso denegado: el usuario es menor de edad')
+            raise PermissionError('El usuario es menor de edad')
         else:
             print('Acceso concedido: el usuario es mayor de edad')
+        func(user,*args) # Primero se hace la validacion, despues se ejecuta la func(*args)
     return wrapper
 
 
