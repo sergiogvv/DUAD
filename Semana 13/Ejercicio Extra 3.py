@@ -9,13 +9,11 @@ def log_call(func):
 
 def validate_numbers(func):
     def wrapper(*args):
+        
+        for arg in args:
+            if isinstance(arg, int) == False and isinstance(arg, float) == False :
+                raise ValueError('Esta funcion posee argumentos que no son numeros')
         result = func(*args)
-        try:
-            for arg in args:
-                if isinstance(arg, int) == False and isinstance(arg, float) == False :
-                    raise ValueError()
-        except:
-            print('Error: Esta funcion posee argumentos que no son numeros')
         return result 
     return wrapper
 
