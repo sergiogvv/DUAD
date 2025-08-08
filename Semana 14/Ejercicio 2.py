@@ -18,6 +18,7 @@ class Double_Ended_Queue:
 
     def __init__(self, head):
         self.head = head
+        self.tail = head
 
     def print_structure(self):
         if self.head:
@@ -29,16 +30,20 @@ class Double_Ended_Queue:
         else:
             print("Estructura de datos vacía")
 
+    def _Tail(self,current_node):
+        #recorrer estructura hacia la izquierda y asignar tail
+        while current_node.next is not None:
+            current_node = current_node.next
+        self.tail = current_node
+
+
     def push_left(self, new_node):
         #agregar nodo al inicio
         current_node = self.head
         self.head = new_node
         self.head.next = current_node
         print(f'\nPUSH LEFT: {new_node.data}')
-        #recorrer estructura hacia la izquierda y asignar tail
-        while current_node.next is not None:
-            current_node = current_node.next
-        self.tail = current_node
+
 
     def push_right(self, new_node):
         #recorrer estructura hacia la izquierda
@@ -57,12 +62,7 @@ class Double_Ended_Queue:
             self.head = self.head.next
             
             if self.head is not None: #si la estructura no esta vacia...
-                #...recorrer estructura hacia la izquierda y asignar tail
-                current_node = self.head
-                while current_node.next is not None:
-                    current_node = current_node.next
-                
-                self.tail = current_node
+                self._Tail(self.head)
             else:
                 self.tail = None # no hay tail si la estructura ya esta vacia
         else:
