@@ -48,9 +48,9 @@ class Binary_Tree:
 
 
     def print_structure(self):
-        print("Tree Structure:")
+        print("Estructura del arbol:")
         self._print_subtree(self.root)
-        print(f"\nTree Depth: {self.Tree_Depth}")
+        
 
         
     def _print_subtree(self, node, pre_char="", is_right=True):
@@ -85,7 +85,7 @@ tree.add_node(Node("H"))
 # tree.add_node(Node("I"))
 
 tree.print_structure()
-
+print(f"\nProfundidad: {tree.Tree_Depth}")
 
 
 
