@@ -46,22 +46,31 @@ class Binary_Tree:
             else:
                 self._insert_evenly(current_node.right, new_node) #sino insertar nodo en rama derecha
 
-    def print_structure(self):
-        def _print(node, level):
-            if node is not None:
-                indent = "  " * level
-                print(f"{indent}- {node.data}")
-                _print(node.left, level + 1)
-                _print(node.right, level + 1)
 
+    def print_structure(self):
         print("Tree Structure:")
-        _print(self.root, 0)
+        self._print_subtree(self.root)
         print(f"\nTree Depth: {self.Tree_Depth}")
+
+        
+    def _print_subtree(self, node, pre_char="", is_right=True):
+            if node is not None:
+                connector = "└── "
+                print(pre_char + connector + node.data)
+                if is_right:
+                    new_pre_char = pre_char + "│   "
+                else:
+                    new_pre_char = pre_char + "    "
+                self._print_subtree(node.right, new_pre_char, True) #nodos derechos se imprimen abajo
+                self._print_subtree(node.left, new_pre_char, False) #nodos izquierdos se imprimien arriba
+
+
 
 
 bonzai = Node("A",Node("B"),Node("C"))
 level_bonzai = depth_node(bonzai)
 print(level_bonzai)
+print()
 
 
 tree = Binary_Tree(Node("A"))
@@ -69,6 +78,11 @@ tree.add_node(Node("B"))
 tree.add_node(Node("C"))
 tree.add_node(Node("D"))
 tree.add_node(Node("E"))
+tree.add_node(Node("F"))
+tree.add_node(Node("G"))
+tree.add_node(Node("H"))
+# tree.add_node(Node("I"))
+# tree.add_node(Node("I"))
 
 tree.print_structure()
 
