@@ -69,19 +69,20 @@ class Double_Ended_Queue:
             print("Estructura de datos vacía")
 
     def pop_right(self):
-        if self.head: #si la estructura no esta vacia...
+        if self.tail: #si la estructura no esta vacia...
             #...recorrer estructura hacia la izquierda 
             current_node = self.head
             if self.head.next is not None:
                 while current_node.next is not self.tail:
                     current_node = current_node.next
                 #quitar nodo al final y asginar tail
-                print(f'\nPOP RIGHT: {current_node.next.data}')
+                print(f'\nPOP RIGHT: {self.tail.data}')
                 self.tail = current_node
                 current_node.next = None
             else:
                 print(f'\nPOP RIGHT: {current_node.data}')
                 self.head = None # no hay head si la estructura ya esta vacia
+                self.tail = None # no hay tail si la estructura ya esta vacia
         else:
             print("Estructura de datos vacía")
 
@@ -90,6 +91,9 @@ print("Init Double Ended Queue")
 first_node = Node("Hola")
 my_dbl_ended_q = Double_Ended_Queue(first_node)
 my_dbl_ended_q.print_structure() 
+# my_dbl_ended_q.pop_right()
+# my_dbl_ended_q.print_structure() 
+
 
 second_node = Node("Mundo")
 my_dbl_ended_q.push_right(second_node)
