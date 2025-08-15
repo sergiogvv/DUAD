@@ -18,4 +18,4 @@ def list_primes(list):
 
 list_primes([1, 4, 6, 7, 13, 9, 67])
 print("""""")
-list_primes(range(0,1000))
+list_primes(range(0,1000,2))
