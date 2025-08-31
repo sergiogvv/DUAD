@@ -1,16 +1,40 @@
 import csv
-
-def import_csv_file(file_path):
-  with open(file_path, 'r', encoding='utf-8') as f:
-    reader = csv.DictReader(f)
-    student_list = []
-    for row in reader:
-      student_list.append(row)
-    return student_list
+from json import (load as jsonload, dump as jsondump, loads as jsonloads)
 
 
-def write_csv_file(file_path, data, headers):
-  with open(file_path, 'w', encoding='utf-8', newline='') as f:
-    writer = csv.DictWriter(f, headers)
-    writer.writeheader()
-    writer.writerows(data)
+
+
+def save_data(data_file, data_json):
+    with open(data_file, 'w') as f:
+        f.write(data_json)
+
+
+def load_categories_data(categories_file):
+    try:
+        with open(categories_file, 'r') as f:
+                data = jsonload(f)
+        return data
+    except:
+         return {}
+
+
+def load_transactions_data(transactions_file):
+    try:
+        with open(transactions_file, 'r') as f:
+                data = jsonload(f)
+        return data
+    except:
+         return []
+
+
+def export_to_csv(data_file, data_list, total_income, total_expenses):
+    with open(data_file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Date', 'Title', 'Amount', 'Category', 'Type'])  # encabezados
+        writer.writerows(data_list)
+        writer.writerow([])
+        writer.writerow(['Totals'])
+        writer.writerow([f'Income: {total_income}'])
+        writer.writerow([f'Expense: {total_expenses}'])
+        writer.writerow([f'Net Balance: {total_income-total_expenses}'])
+
