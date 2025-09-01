@@ -27,9 +27,11 @@ def load_transactions_data(transactions_file):
          return []
 
 
-def export_to_csv(data_file, data_list, total_income, total_expenses):
+def export_to_csv(data_file, data_list, total_income, total_expenses, date_from, date_to):
     with open(data_file, 'w', newline='') as f:
         writer = csv.writer(f)
+        writer.writerow([f'Filtered from {date_from} to {date_to}'])
+        writer.writerow([])
         writer.writerow(['Date', 'Title', 'Amount', 'Category', 'Type'])  # encabezados
         writer.writerows(data_list)
         writer.writerow([])

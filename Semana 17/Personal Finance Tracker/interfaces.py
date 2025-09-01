@@ -1,5 +1,5 @@
 import FreeSimpleGUI as sg
-from logic import Transaction,FinanceTracker, Category, validate_transaction_fields, validate_category_fields, Category_Collection, list_transaction_row_w_color, validate_path, validate_date_format
+from logic import Transaction,FinanceTracker, Category, validate_transaction_fields, validate_category_fields, Category_Collection, row_color_lookup, validate_path, validate_date_format, validate_from_to_dates
 from datetime import date, datetime
 from persistance import save_data, load_categories_data,load_transactions_data, export_to_csv
 from os import path
@@ -10,7 +10,6 @@ def name(name):
 sg.theme('Default1') 
 
 
-
 def main_window(transactions_file, categories_file):
         category_collection = Category_Collection()
         category_collection.category_dict = load_categories_data(categories_file)
@@ -19,14 +18,14 @@ def main_window(transactions_file, categories_file):
         transactions_data = load_transactions_data(transactions_file)
         finance_tracker.transactions_from_list_of_dict(transactions_data)
 
-
         layout = [
+                [sg.Text()],
                 [sg.T('PERSONAL FINANCE TRACKER', font='_ 14', justification='c', expand_x=True)],
                 [sg.Text()],
-                [sg.Text("TRANSACTIONS")],
                 [sg.Text()],
-                [sg.CalendarButton('From',target='-FROM-',tooltip=' Select date ',format= '%m/%d/%Y'), sg.Input(key='-FROM-', s=10),sg.CalendarButton('To',target='-TO-',tooltip=' Select date ',format= '%m/%d/%Y' ),sg.Input(key='-TO-',s=10),sg.Push(),sg.Button('Apply Filter',key='-FILTER-')],
-                [sg.Table(finance_tracker.transactions(), ['Date', 'Title', 'Amount', 'Category', 'Type'],visible_column_map = ['Date', 'Title', 'Amount', 'Category', 'Type'],
+                [sg.CalendarButton('From',target='-FROM-',tooltip=' Select date ',format= '%m/%d/%Y'), sg.Input(key='-FROM-', s=10),sg.CalendarButton('To',target='-TO-',tooltip=' Select date ',format= '%m/%d/%Y' ),sg.Input(key='-TO-',s=10),sg.Push(),sg.Button('Apply Filter',key='-FILTER-'),sg.Button('Clear Filter',key='-CLEAR FILTER-')],
+                [sg.Text(key = '-FILTERED_BY-')],
+                [sg.Table(finance_tracker.transactions_list, ['Date', 'Title', 'Amount', 'Category', 'Type'],
                         def_col_width = 15,
                         starting_row_number = 0,
                         max_col_width = 100,
@@ -35,8 +34,9 @@ def main_window(transactions_file, categories_file):
                         auto_size_columns = False,
                         display_row_numbers = True,
                         justification='right',
+                        enable_click_events=True,
                         num_rows=20,
-                        row_colors = list_transaction_row_w_color(finance_tracker.transactions(),category_collection),
+                        row_colors = row_color_lookup(finance_tracker.transactions_list,category_collection),
                         key='-TABLE-',
                         tooltip='This is a table')],
                 [sg.Push(),sg.Button("Input Expense",key='-EXPENSE-'), sg.Button("Input Income", key='-INCOME-'), sg.Button('Add Category', key='-CATEGORY-'), sg. Button('Export to CSV', key='-CSV-'),sg.Push()],
@@ -51,14 +51,30 @@ def main_window(transactions_file, categories_file):
                 print(event,values)
                 if event == sg.WIN_CLOSED:
                         break
-                if event == '-EXPENSE-':
+
+                if event =='-CLEAR FILTER-':
+                        window['-FROM-'].update('')
+                        window['-TO-'].update('')
+                        window['-FILTERED_BY-'].update('')
+                        window['-TABLE-'].update(values= finance_tracker.transactions_list, row_colors = row_color_lookup(finance_tracker.transactions_list,category_collection))
+                        continue
+                if event == '-FILTER-':
+                        valid_dates = validate_from_to_dates(values['-FROM-'],values['-TO-'])
+                        if valid_dates != True:
+                                sg.popup_error(valid_dates)
+                        else:
+                                window['-FILTERED_BY-'].update(f'Filtered from {values['-FROM-']} to {values['-TO-']}')
+                                filtered_transactions = finance_tracker.date_filtered_transactions(values['-FROM-'],values['-TO-'])
+                                window['-TABLE-'].update(values= filtered_transactions,row_colors = row_color_lookup(filtered_transactions,category_collection))
+                                continue
+                if event == '-EXPENSE-':                     
                         if  category_collection.category_dict == {}:
                                 sg.popup_error('Please enter a category first before entering a transaction') 
                                 continue                       
                         expense = transaction_window('Expense', category_collection.return_list_of_category_names())
                         if expense is not None:
                                 finance_tracker.add_transaction(expense)
-                                window['-TABLE-'].update(values=finance_tracker.transactions(),row_colors = list_transaction_row_w_color(finance_tracker.transactions(),category_collection))
+                                window['-TABLE-'].update(values=finance_tracker.transactions_list,row_colors = row_color_lookup(finance_tracker.transactions_list,category_collection))
                                 save_data(transactions_file, finance_tracker.transactions_json())
                 if event == '-INCOME-':
                         if  category_collection.category_dict == {}:
@@ -67,7 +83,7 @@ def main_window(transactions_file, categories_file):
                         income = transaction_window('Income', category_collection.return_list_of_category_names())
                         if income is not None:
                                 finance_tracker.add_transaction(income)
-                                window['-TABLE-'].update(values=finance_tracker.transactions(),row_colors = list_transaction_row_w_color(finance_tracker.transactions(),category_collection))
+                                window['-TABLE-'].update(values=finance_tracker.transactions_list,row_colors = row_color_lookup(finance_tracker.transactions_list,category_collection))
                                 save_data(transactions_file, finance_tracker.transactions_json())
                 if event == '-CATEGORY-':
                         category = category_window()
@@ -75,7 +91,7 @@ def main_window(transactions_file, categories_file):
                                 category_collection.add_category(category)
                                 save_data(categories_file,category_collection.categories_json())
                 if event == '-CSV-' :
-                        export_to_CSV_window(finance_tracker.transactions(),finance_tracker.total_income(),finance_tracker.total_expenses())
+                        export_to_CSV_window(window['-TABLE-'].Values,finance_tracker.total_income(),finance_tracker.total_expenses(),values['-FROM-'],values['-TO-'])
         window.close()  
 
 def transaction_window(type_title,category_list):
@@ -100,7 +116,7 @@ def transaction_window(type_title,category_list):
                         try:
                                 in_as_float = float(values['-AMOUNT-'])
                         except:
-                                if len(values['-AMOUNT-']) == 1 and values['-AMOUNT-'][0] == '-':
+                                if len(values['-AMOUNT-']) == 0 and values['-AMOUNT-'][0] != '-':
                                         continue
                                 window['-AMOUNT-'].update(values['-AMOUNT-'][:-1])
                 if event == "Save Transaction":
@@ -108,7 +124,8 @@ def transaction_window(type_title,category_list):
                         if valid_date == True:
                                 valid_fields = validate_transaction_fields(values['-DATE-'], values['-NAME-'], values['-AMOUNT-'], values['-CATEGORY-'])
                                 if valid_fields == True:
-                                        transaction = Transaction(values['-DATE-'], values['-NAME-'], values['-AMOUNT-'], values['-CATEGORY-'], type_title)
+                                        amount = -values['-AMOUNT-'] if type_title == 'Expense' else values['-AMOUNT-']
+                                        transaction = Transaction(values['-DATE-'], values['-NAME-'], amount, values['-CATEGORY-'], type_title)
                                         window.close()
                                         return transaction
                                 else:
@@ -149,9 +166,10 @@ def category_window():
                         window['-COLOR-'].update('')
         window.close()               
 
-def export_to_CSV_window(transactions,total_income,total_expenses):
+def export_to_CSV_window(transactions,total_income,total_expenses, date_from, date_to):
         layout = [
                 [name('Export Path'), sg.Input(key='-USER FOLDER-'), sg.FolderBrowse(target='-USER FOLDER-')],
+                [name('File Name'), sg.Input('export.csv', key='-FILENAME-')],
                 [sg.Text()],
                 [sg.Push(), sg.Button("OK"),sg.Button("Clear All"), sg.Button("Cancel"),sg.Push()]                
                 ]
@@ -166,9 +184,10 @@ def export_to_CSV_window(transactions,total_income,total_expenses):
                 if event == "OK":
                         valid_path = validate_path(values['-USER FOLDER-'])
                         if valid_path == True:
-                                csv_file = path.join((values['-USER FOLDER-']), r'export.csv')
+                                file_name = values['-FILENAME-'].strip() or 'export.csv'
+                                csv_file = path.join((values['-USER FOLDER-']), file_name)
                                 print(csv_file)
-                                export_to_csv(csv_file, transactions, total_income, total_expenses)
+                                export_to_csv(csv_file, transactions, total_income, total_expenses, date_from, date_to)
                                 window.close()
                                 sg.popup(f'File exported to {csv_file}')
                                 break

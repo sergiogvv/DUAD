@@ -1,6 +1,31 @@
 from datetime import date, datetime
 from json import (load as jsonload, dump as jsondump, dumps as jsondumps)
 
+
+def ISO_date(date_m_d_Y):
+    return datetime.strptime(date_m_d_Y,"%m/%d/%Y").date()
+
+
+def validate_from_to_dates(date_from,date_to):
+    try:
+        if date_from.strip() == '' or date_to.strip() == '':
+            return True
+        elif ISO_date(date_to) < ISO_date(date_from):
+            raise ValueError('"Date from" field must be less than "Date to" field')
+        else:
+            return True
+    except Exception as e:
+        return e
+
+
+def validate_date_format(date_transaction):
+    try:
+        if ISO_date(date_transaction):
+            return True
+    except:
+        return 'Invalid date format (use mm/dd/yyyy)'
+
+
 def validate_path(path):
     try:
         if path.strip() == '':
@@ -9,14 +34,6 @@ def validate_path(path):
             return True
     except Exception as e:
         return e
-    
-
-def validate_date_format(date_transaction):
-    try:
-        if datetime.strptime(date_transaction,"%m/%d/%Y").date():
-            return True
-    except:
-        return 'Invalid date format (use mm/dd/yyyy)'
 
 
 def validate_transaction_fields(date_transaction, title, amount,category_name): #validar formulario de transacciones
@@ -27,7 +44,7 @@ def validate_transaction_fields(date_transaction, title, amount,category_name): 
             raise ValueError('Amount can not be empty')
         if category_name =='':
             raise ValueError('Category can not be empty.')
-        if datetime.strptime(date_transaction,"%m/%d/%Y").date() > date.today():
+        if ISO_date(date_transaction) > date.today():
             raise ValueError('Date cannot be a future date')
         else:
             return True
@@ -45,13 +62,6 @@ def validate_category_fields(category_name,color): #validar categoria y color
             return True
     except Exception as e:
         return e
-
-
-def list_transaction_row_w_color(transaction_list,category_collection): #producir lista de fila y color
-    returned_tuple = []
-    for i in range(len(transaction_list)):
-        returned_tuple.append((i, category_collection.category_dict[transaction_list[i][3]]) )
-    return returned_tuple
 
 
 class Category(): #categoria y color
@@ -81,13 +91,13 @@ class Transaction(): #transaccion
     date_transaction: date 
     title: str
     amount: float
-    category: Category
+    category_name: str
     transaction_type: str
 
     def __init__(self, date_transaction, title, amount, category_name, transaction_type):
         self.date_transaction = date_transaction                        #datetime.strptime(date_transaction,"%m/%d/%Y").date()
         self.title  = title
-        self.amount = -float(amount) if transaction_type == 'Expense'else float(amount)
+        self.amount = float(amount)
         self.category_name = category_name
         self.transaction_type = transaction_type
 
@@ -105,21 +115,22 @@ class Transaction(): #transaccion
     
     @staticmethod
     def from_dict(dict):
-        return Transaction(dict['date_transaction'],dict['title'], dict['amount'], dict['category_name'], dict['transaction_type'])
+        return Transaction(**dict)
 
 
 class FinanceTracker(): #base de datos de transacciones
     def __init__(self):
-        self.transactions_list = []
+        self.transactions = []
 
     def add_transaction(self,transaction):
-        self.transactions_list.append(transaction)
+        self.transactions.append(transaction)
 
-    def transactions(self):
-        return [transaction.to_list() for transaction in self.transactions_list]
+    @property
+    def transactions_list(self):
+        return [transaction.to_list() for transaction in self.transactions]
     
     def transactions_json(self):
-        return jsondumps([transaction.to_dict() for transaction  in self.transactions_list], indent=2) 
+        return jsondumps([transaction.to_dict() for transaction  in self.transactions], indent=2) 
     
     def transactions_from_list_of_dict(self, data):
         for dict in data:
@@ -128,17 +139,44 @@ class FinanceTracker(): #base de datos de transacciones
     def total_income(self):
         transaction_sum = 0
         for transaction in self.transactions_list:
-            if transaction.transaction_type == 'Income':
-                transaction_sum += transaction.amount
+            if transaction[4] == 'Income':
+                transaction_sum += transaction[2]
         return transaction_sum
         
     def total_expenses(self):
         transaction_sum = 0
         for transaction in self.transactions_list:
-            if transaction.transaction_type == 'Expense':
-                transaction_sum += abs(transaction.amount)
+            if transaction[4] == 'Expense':
+                transaction_sum += abs(transaction[2])
         return transaction_sum
     
+    def date_filtered_transactions(self,date_from,date_to):
+        filtered_transactions_list = []
+        if date_from.strip() == '' and date_to.strip() == '':
+            return self.transactions_list
+        if date_from and date_to.strip() == '':
+            for transaction in self.transactions:
+                if ISO_date(date_from) <= ISO_date(transaction.date_transaction):
+                    filtered_transactions_list.append(transaction.to_list())
+            return filtered_transactions_list
+        if date_to and date_from.strip() == '':
+            for transaction in self.transactions:
+                if ISO_date(transaction.date_transaction) <= ISO_date(date_to):
+                    filtered_transactions_list.append(transaction.to_list())
+            return filtered_transactions_list
+        if  ISO_date(date_from) < ISO_date(date_to):
+            for transaction in self.transactions:
+                if ISO_date(date_from) <= ISO_date(transaction.date_transaction) <= ISO_date(date_to):
+                    filtered_transactions_list.append(transaction.to_list())
+            return filtered_transactions_list
+
+
+def row_color_lookup(transaction_list,category_collection): #producir lista de fila y color
+    rows_colors = []
+    for i in range(len(transaction_list)):
+        category_name = transaction_list[i][3]
+        rows_colors.append((i, category_collection.category_dict[category_name]) )
+    return rows_colors
 
 
 #validate_transaction_fields('34','1era quincena',750000.0,'Salario')

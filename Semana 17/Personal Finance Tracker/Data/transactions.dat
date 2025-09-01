@@ -2,21 +2,21 @@
   {
     "date_transaction": "08/30/2025",
     "title": "Salida viernes",
-    "amount": 20000.0,
+    "amount": -20000.0,
     "category_name": "Entretenimiento",
     "transaction_type": "Expense"
   },
   {
     "date_transaction": "08/22/2025",
     "title": "Cine",
-    "amount": 5000.0,
+    "amount": -5000.0,
     "category_name": "Entretenimiento",
     "transaction_type": "Expense"
   },
   {
     "date_transaction": "08/16/2025",
     "title": "Supermercado",
-    "amount": 90000.0,
+    "amount": -90000.0,
     "category_name": "Alimentacion",
     "transaction_type": "Expense"
   },
@@ -32,6 +32,20 @@
     "title": "Comida de gato",
     "amount": -24000.0,
     "category_name": "Mascota",
+    "transaction_type": "Expense"
+  },
+  {
+    "date_transaction": "09/01/2025",
+    "title": "2da quincena",
+    "amount": 700000.0,
+    "category_name": "Salario",
+    "transaction_type": "Income"
+  },
+  {
+    "date_transaction": "08/01/2025",
+    "title": "Gasolina",
+    "amount": -50000.0,
+    "category_name": "Transporte",
     "transaction_type": "Expense"
   }
 ]
