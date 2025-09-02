@@ -1,7 +1,7 @@
 import FreeSimpleGUI as sg
 from logic import Transaction,FinanceTracker, Category, validate_transaction_fields, validate_category_fields, Category_Collection, row_color_lookup, validate_path, validate_date_format, validate_from_to_dates
-from datetime import date, datetime
-from persistance import save_data, load_categories_data,load_transactions_data, export_to_csv
+from datetime import date
+from persistance import save_data, load_categories_data,load_transactions_data, export_to_csv, load_data
 from os import path
 
 def name(name):
@@ -23,8 +23,7 @@ def main_window(transactions_file, categories_file):
                 [sg.T('PERSONAL FINANCE TRACKER', font='_ 14', justification='c', expand_x=True)],
                 [sg.Text()],
                 [sg.Text()],
-                [sg.CalendarButton('From',target='-FROM-',tooltip=' Select date ',format= '%m/%d/%Y'), sg.Input(key='-FROM-', s=10),sg.CalendarButton('To',target='-TO-',tooltip=' Select date ',format= '%m/%d/%Y' ),sg.Input(key='-TO-',s=10),sg.Push(),sg.Button('Apply Filter',key='-FILTER-'),sg.Button('Clear Filter',key='-CLEAR FILTER-')],
-                [sg.Text(key = '-FILTERED_BY-')],
+                [sg.Text('Filtered '), sg.CalendarButton('from',target='-FROM-',tooltip=' Select date ',format= '%m/%d/%Y'), sg.Input(key='-FROM-', s=10),sg.CalendarButton('to',target='-TO-',tooltip=' Select date ',format= '%m/%d/%Y' ),sg.Input(key='-TO-',s=10),sg.Push(),sg.Button('Apply Filter',key='-FILTER-'),sg.Button('Clear Filter',key='-CLEAR FILTER-')],
                 [sg.Table(finance_tracker.transactions_list, ['Date', 'Title', 'Amount', 'Category', 'Type'],
                         def_col_width = 15,
                         starting_row_number = 0,
@@ -51,22 +50,19 @@ def main_window(transactions_file, categories_file):
                 print(event,values)
                 if event == sg.WIN_CLOSED:
                         break
-
                 if event =='-CLEAR FILTER-':
                         window['-FROM-'].update('')
                         window['-TO-'].update('')
-                        window['-FILTERED_BY-'].update('')
                         window['-TABLE-'].update(values= finance_tracker.transactions_list, row_colors = row_color_lookup(finance_tracker.transactions_list,category_collection))
                         continue
                 if event == '-FILTER-':
                         valid_dates = validate_from_to_dates(values['-FROM-'],values['-TO-'])
-                        if valid_dates != True:
-                                sg.popup_error(valid_dates)
-                        else:
-                                window['-FILTERED_BY-'].update(f'Filtered from {values['-FROM-']} to {values['-TO-']}')
+                        if valid_dates == True:
                                 filtered_transactions = finance_tracker.date_filtered_transactions(values['-FROM-'],values['-TO-'])
                                 window['-TABLE-'].update(values= filtered_transactions,row_colors = row_color_lookup(filtered_transactions,category_collection))
-                                continue
+                                continue                                
+                        else:
+                                sg.popup_error(valid_dates)
                 if event == '-EXPENSE-':                     
                         if  category_collection.category_dict == {}:
                                 sg.popup_error('Please enter a category first before entering a transaction') 
@@ -91,7 +87,13 @@ def main_window(transactions_file, categories_file):
                                 category_collection.add_category(category)
                                 save_data(categories_file,category_collection.categories_json())
                 if event == '-CSV-' :
-                        export_to_CSV_window(window['-TABLE-'].Values,finance_tracker.total_income(),finance_tracker.total_expenses(),values['-FROM-'],values['-TO-'])
+                        valid_dates = validate_from_to_dates(values['-FROM-'],values['-TO-'])
+                        if valid_dates == True:
+                                filtered_transactions = finance_tracker.date_filtered_transactions(values['-FROM-'],values['-TO-'])
+                                window['-TABLE-'].update(values= filtered_transactions,row_colors = row_color_lookup(filtered_transactions,category_collection))
+                                export_to_CSV_window(window['-TABLE-'].Values,finance_tracker.total_income(),finance_tracker.total_expenses(),values['-FROM-'],values['-TO-'])
+                        else:
+                                sg.popup_error(valid_dates)
         window.close()  
 
 def transaction_window(type_title,category_list):
@@ -167,14 +169,18 @@ def category_window():
         window.close()               
 
 def export_to_CSV_window(transactions,total_income,total_expenses, date_from, date_to):
+        last_export_path = path.join(path.dirname(__file__),'Data', r'last_export_path.cfg')
+        folder_path = load_data(last_export_path)
         layout = [
-                [name('Export Path'), sg.Input(key='-USER FOLDER-'), sg.FolderBrowse(target='-USER FOLDER-')],
-                [name('File Name'), sg.Input('export.csv', key='-FILENAME-')],
+                [name('Export Path'), sg.Input(folder_path, key='-USER FOLDER-'), sg.FolderBrowse(target='-USER FOLDER-')],
+                [name('File Name'), sg.Input(key='-FILENAME-')],
                 [sg.Text()],
                 [sg.Push(), sg.Button("OK"),sg.Button("Clear All"), sg.Button("Cancel"),sg.Push()]                
                 ]
         
         window = sg.Window('Export to CSV', layout, disable_close = True, disable_minimize = True, modal = True )
+
+
 
         while True:
                 event, values = window.read()
@@ -182,31 +188,22 @@ def export_to_CSV_window(transactions,total_income,total_expenses, date_from, da
                 if event == 'Cancel':
                         break
                 if event == "OK":
-                        valid_path = validate_path(values['-USER FOLDER-'])
+                        valid_path = validate_path(values['-USER FOLDER-'],values['-FILENAME-'])
                         if valid_path == True:
-                                file_name = values['-FILENAME-'].strip() or 'export.csv'
-                                csv_file = path.join((values['-USER FOLDER-']), file_name)
-                                print(csv_file)
-                                export_to_csv(csv_file, transactions, total_income, total_expenses, date_from, date_to)
+                                file_name = values['-FILENAME-']
+                                folder_path = values['-USER FOLDER-']
+                                csv_file_path = path.join(folder_path, file_name)
+                                export_to_csv(csv_file_path, transactions, total_income, total_expenses, date_from, date_to)
+                                save_data(last_export_path,folder_path)
                                 window.close()
-                                sg.popup(f'File exported to {csv_file}')
+                                sg.popup(f'File exported to {csv_file_path}')
                                 break
                         else:
                                 sg.popup_error(valid_path)
                 if event == 'Clear All':
+                        folder_path = ''
+                        save_data(last_export_path,folder_path)
                         window['-USER FOLDER-'].update('')
+                        window['-FILENAME-'].update('')
+
         window.close()  
-
-
-
-
-
-
-
-
-
-
-
-#transaction_window('Expense')
-#transaction_window('Income')
-#main_window()

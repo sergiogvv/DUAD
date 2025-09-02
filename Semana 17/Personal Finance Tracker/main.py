@@ -1,5 +1,4 @@
 from interfaces import main_window
-from logic import Transaction, Category, FinanceTracker
 from os import path
 
 
@@ -9,9 +8,6 @@ def main():
     categories_file = path.join(path.dirname(__file__),'Data', r'categories.dat')
 
     main_window(transactions_file,categories_file)
-
-
-
 
 if __name__ == "__main__":
     main()

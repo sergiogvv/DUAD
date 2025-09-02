@@ -26,10 +26,14 @@ def validate_date_format(date_transaction):
         return 'Invalid date format (use mm/dd/yyyy)'
 
 
-def validate_path(path):
+def validate_path(folder_path,file_name):
     try:
-        if path.strip() == '':
-            raise ValueError('Invalid path: Please enter a valid path to export csv file')
+        if folder_path.strip() == '':
+            raise ValueError('Invalid path: Please enter a valid folder path to export csv file')
+        if file_name.strip() == '':
+            raise ValueError('Invalid path: Please enter a valid file name')
+        if not file_name.strip().endswith('.csv'):
+            raise ValueError('Invalid path: Please add ".csv" extension to file name')
         else:
             return True
     except Exception as e:
