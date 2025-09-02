@@ -1,5 +1,5 @@
 import FreeSimpleGUI as sg
-from logic import Transaction,FinanceTracker, Category, validate_transaction_fields, validate_category_fields, Category_Collection, row_color_lookup, validate_path, validate_date_format, validate_from_to_dates
+from logic import Transaction,FinanceTracker, Category, validate_transaction_fields, validate_category_fields, Category_Collection, row_color_lookup, validate_path, validate_date_format, validate_from_to_dates, validate_amount_is_not_string
 from datetime import date
 from persistance import save_data, load_categories_data,load_transactions_data, export_to_csv, load_data
 from os import path
@@ -107,7 +107,7 @@ def transaction_window(type_title,category_list):
                 [sg.Push(), sg.Button("Save Transaction"),sg.Button("Clear All"), sg.Button("Cancel"),sg.Push()]
                 ] 
 
-        window = sg.Window('Add '+type_title, layout, disable_close = True, disable_minimize = True, modal = True )
+        window = sg.Window('Add '+type_title, layout, disable_close = True, disable_minimize = True, modal = True)
 
         while True:
                 event, values = window.read()
@@ -127,10 +127,13 @@ def transaction_window(type_title,category_list):
                         if valid_date == True:
                                 valid_fields = validate_transaction_fields(values['-DATE-'], values['-NAME-'], values['-AMOUNT-'], values['-CATEGORY-'])
                                 if valid_fields == True:
-                                        amount = -values['-AMOUNT-'] if type_title == 'Expense' else values['-AMOUNT-']
-                                        transaction = Transaction(values['-DATE-'], values['-NAME-'], amount, values['-CATEGORY-'], type_title)
-                                        window.close()
-                                        return transaction
+                                        valid_amount = validate_amount_is_not_string(values['-AMOUNT-'])
+                                        if valid_amount ==True:
+                                                transaction = Transaction(values['-DATE-'], values['-NAME-'], values['-AMOUNT-'], values['-CATEGORY-'], type_title)
+                                                window.close()
+                                                return transaction
+                                        else:
+                                                sg.popup_error(valid_amount)
                                 else:
                                         sg.popup_error(valid_fields)
                         else:

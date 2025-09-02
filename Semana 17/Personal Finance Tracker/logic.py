@@ -39,6 +39,13 @@ def validate_path(folder_path,file_name):
     except Exception as e:
         return e
 
+def validate_amount_is_not_string(amount):
+        try:
+            if isinstance(float(amount),float):
+                return True
+        except:
+            return 'Amount can only have numeric values'
+
 
 def validate_transaction_fields(date_transaction, title, amount,category_name): 
     try:
@@ -101,7 +108,7 @@ class Transaction():
     def __init__(self, date_transaction, title, amount, category_name, transaction_type):
         self.date_transaction = date_transaction                        
         self.title  = title
-        self.amount = float(amount)
+        self.amount = -abs(float(amount)) if transaction_type == 'Expense' else abs(float(amount))
         self.category_name = category_name
         self.transaction_type = transaction_type
 

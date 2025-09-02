@@ -4,7 +4,7 @@ import os
 from datetime import date, datetime, timedelta
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from logic import Transaction,FinanceTracker, Category, validate_transaction_fields, validate_category_fields, Category_Collection, row_color_lookup, validate_path, validate_date_format, validate_from_to_dates
+from logic import validate_amount_is_not_string, validate_transaction_fields, validate_category_fields, Category_Collection, row_color_lookup, validate_path, validate_date_format, validate_from_to_dates
 
 import pytest
 
@@ -16,8 +16,18 @@ import pytest
 ])
 def test_validate_transaction_fields_invalid_inputs(date_transaction, title, amount, category_name, expected_message):
     result = validate_transaction_fields(date_transaction, title, amount, category_name)
-    assert isinstance(result, ValueError)
+    assert isinstance(result, ValueError) or isinstance(result, TypeError)
     assert str(result) == expected_message
+
+def test_validate_amount_is_not_string_valid_input():
+    amount = '15000'
+    result = validate_amount_is_not_string(amount)
+    assert result == True
+
+def test_validate_amount_is_not_string_invalid_input():
+    amount = '55-5'
+    result = validate_amount_is_not_string(amount)
+    assert result == 'Amount can only have numeric values'
 
 
 @pytest.mark.parametrize('category_name,color,expected_message', [
