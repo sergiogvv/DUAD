@@ -40,7 +40,7 @@ def validate_path(folder_path,file_name):
         return e
 
 
-def validate_transaction_fields(date_transaction, title, amount,category_name): #validar formulario de transacciones
+def validate_transaction_fields(date_transaction, title, amount,category_name): 
     try:
         if title.strip() == '':
             raise ValueError('Transaction Name can not be empty')
@@ -56,7 +56,7 @@ def validate_transaction_fields(date_transaction, title, amount,category_name): 
         return e
 
 
-def validate_category_fields(category_name,color): #validar categoria y color
+def validate_category_fields(category_name,color): 
     try:
         if category_name.strip() == '':
             raise ValueError('Category Name can not be empty')
@@ -91,15 +91,15 @@ class Category_Collection(): #Base de datos de categorias
         return jsondumps(self.category_dict, indent=2)
 
 
-class Transaction(): #transaccion
-    date_transaction: date 
+class Transaction(): 
+    date_transaction: str
     title: str
     amount: float
     category_name: str
     transaction_type: str
 
     def __init__(self, date_transaction, title, amount, category_name, transaction_type):
-        self.date_transaction = date_transaction                        #datetime.strptime(date_transaction,"%m/%d/%Y").date()
+        self.date_transaction = date_transaction                        
         self.title  = title
         self.amount = float(amount)
         self.category_name = category_name

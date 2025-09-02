@@ -7,16 +7,16 @@ from os import path
 def name(name):
         return sg.Text(name + '    ', justification='r',size= (20,1),pad=(10,10))
 
+
 sg.theme('Default1') 
 
-
 def main_window(transactions_file, categories_file):
-        category_collection = Category_Collection()
-        category_collection.category_dict = load_categories_data(categories_file)
+        category_collection = Category_Collection() #Categories Table
+        category_collection.category_dict = load_categories_data(categories_file) #load categories.dat
 
-        finance_tracker = FinanceTracker()
-        transactions_data = load_transactions_data(transactions_file)
-        finance_tracker.transactions_from_list_of_dict(transactions_data)
+        finance_tracker = FinanceTracker() #Initialize Finance Tracker
+        transactions_data = load_transactions_data(transactions_file) #load transactions.dat
+        finance_tracker.transactions_from_list_of_dict(transactions_data) #load transactions.dat
 
         layout = [
                 [sg.Text()],
@@ -33,7 +33,7 @@ def main_window(transactions_file, categories_file):
                         auto_size_columns = False,
                         display_row_numbers = True,
                         justification='right',
-                        enable_click_events=True,
+                        enable_click_events=True, #for future update
                         num_rows=20,
                         row_colors = row_color_lookup(finance_tracker.transactions_list,category_collection),
                         key='-TABLE-',
@@ -64,7 +64,7 @@ def main_window(transactions_file, categories_file):
                         else:
                                 sg.popup_error(valid_dates)
                 if event == '-EXPENSE-':                     
-                        if  category_collection.category_dict == {}:
+                        if  category_collection.category_dict == {}: #check if there are any user saved categories
                                 sg.popup_error('Please enter a category first before entering a transaction') 
                                 continue                       
                         expense = transaction_window('Expense', category_collection.return_list_of_category_names())
@@ -96,6 +96,7 @@ def main_window(transactions_file, categories_file):
                                 sg.popup_error(valid_dates)
         window.close()  
 
+
 def transaction_window(type_title,category_list):
         layout = [
                 [name('Transaction Name'),sg.Input(key='-NAME-', s=15)],
@@ -114,7 +115,7 @@ def transaction_window(type_title,category_list):
                 if event == 'Cancel':
                         window.close()
                         return None
-                if event == '-AMOUNT-' and values['-AMOUNT-']:
+                if event == '-AMOUNT-' and values['-AMOUNT-']: #only numeric values are accpeted
                         try:
                                 in_as_float = float(values['-AMOUNT-'])
                         except:
@@ -139,6 +140,7 @@ def transaction_window(type_title,category_list):
                         window['-AMOUNT-'].update('')
                         window['-DATE-'].update('')
         window.close()
+
 
 def category_window():
         layout = [
@@ -168,9 +170,10 @@ def category_window():
                         window['-COLOR-'].update('')
         window.close()               
 
+
 def export_to_CSV_window(transactions,total_income,total_expenses, date_from, date_to):
-        last_export_path = path.join(path.dirname(__file__),'Data', r'last_export_path.cfg')
-        folder_path = load_data(last_export_path)
+        last_export_path = path.join(path.dirname(__file__),'Data', r'last_export_path.cfg') #last_export path.cfg located in data folder
+        folder_path = load_data(last_export_path) # load last exported folder path
         layout = [
                 [name('Export Path'), sg.Input(folder_path, key='-USER FOLDER-'), sg.FolderBrowse(target='-USER FOLDER-')],
                 [name('File Name'), sg.Input(key='-FILENAME-')],
@@ -179,8 +182,6 @@ def export_to_CSV_window(transactions,total_income,total_expenses, date_from, da
                 ]
         
         window = sg.Window('Export to CSV', layout, disable_close = True, disable_minimize = True, modal = True )
-
-
 
         while True:
                 event, values = window.read()
