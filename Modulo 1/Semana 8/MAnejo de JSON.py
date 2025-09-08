@@ -1,4 +1,5 @@
 import json
+from os import path
 
 def open_and_print_file(path):
 	with open(path) as file:
@@ -47,7 +48,9 @@ Pokemons_JSON_updated = json.dumps(Pokemons_Py, indent=4)
 print('JSON Object:\n')
 print(Pokemons_JSON_updated)
 
-write_text_to_file('Semana 8/Pokemons.json',Pokemons_JSON_updated)
+write_text_to_file(path.join(path.dirname(__file__), r'Pokemons.json'),Pokemons_JSON_updated)
+
+
 
 
 
