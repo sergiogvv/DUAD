@@ -1,32 +1,67 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 app = Flask(__name__)
 
-def validate_attributes(task_id,title,description,status):
+def validate_attributes_are_in_body(request_body):
     try:
-        if task_id.strip() == "":
-            raise ValueError
-        if title.strip() == "":
-            raise ValueError
-        if description.strip() == "":
-            raise ValueError
-        if status.strip() == "":
-            raise ValueError
-    except:
-        pass
+        if "id" not in request_body:
+            raise ValueError("task id missing from the body")
+        if "title" not in request_body:
+            raise ValueError("title missing from the body")
+        if "description" not in request_body:
+            raise ValueError("description missing from the body")
+        if "status" not in request_body:
+            raise ValueError("status missing from the body")
+        return True
+    except ValueError as ex:
+        return ex
 
 
-def validate_task_id():
-    for i in range(0,len(task_list)):
-        pass
+def validate_no_empty_attributes(request_body):
+    try:
+        if str(request_body["id"]).strip() == "":
+            raise ValueError("task id can not be empty")
+        if str(request_body["title"]).strip() == "":
+            raise ValueError("title can not be empty")
+        if str(request_body["description"]).strip() == "":
+            raise ValueError("description can not be empty")
+        if str(request_body["status"]).strip() == "":
+            raise ValueError("status can not be empty")
+        return True
+    except ValueError as ex:
+        return ex
 
 
+def validate_task_id(request_body):
+    try:
+        for task in task_list:
+            if request_body["id"] == task["id"]:
+                raise ValueError("id already exists")
+        return True
+    except ValueError as ex:
+        return ex
+
+
+def find_task_id(task_id):
+        for task in task_list:
+            if task_id == task["id"]:
+                return True
+        return False
+
+
+def validate_status(request_body):
+    try:
+        if request_body["status"] not in status_list:
+            raise ValueError("status not valid")
+        return True
+    except ValueError as ex:
+        return ex
 
 
 status_list = ["pending", "in progress","complete"]
 
 task_list = [
     {
-        "task_id": 12345,
+        "id": 12345,
         "title": "full disk scan",
         "description": "scan every disk sector",
         "status": "pending"
@@ -37,8 +72,24 @@ task_list = [
 @app.route("/create_task", methods = ["POST"])
 def create_task():
     request_body = request.json
-
-    return request_body
+    attributes_present = validate_attributes_are_in_body(request_body)
+    if attributes_present == True:
+        no_empty_attributes = validate_no_empty_attributes(request_body)
+        if no_empty_attributes == True:
+            valid_id = validate_task_id(request_body)
+            if valid_id == True:
+                valid_status = validate_status(request_body)
+                if valid_status == True:
+                    task_list.append(request_body)
+                    return jsonify(data=task_list), 200
+                else:
+                    return jsonify(message=str(valid_status)), 400
+            else:
+                return jsonify(message=str(valid_id)), 400
+        else:
+            return jsonify(message=str(no_empty_attributes)), 400    
+    else:
+        return jsonify(message=str(attributes_present)), 400
 
 #READ
 @app.route("/read_tasks")
@@ -61,25 +112,13 @@ def update_task():
 
 #DELETE
 @app.route("/delete/<task_id>", methods = ["DELETE"])
-def delete_task():
-    pass
+def delete_task(task_id):
+    for i in range(0,len(task_list)):
+        if str(task_list[i]["id"]) == task_id:
+            delete_task = task_list.pop(i)
+            return jsonify(deleted=delete_task), 200
+    return jsonify(message='Task not found'), 400     
 
-@app.route("/")
-def root():
-    print("Hola mundo!!!!!!")
-    return "<h1>Hello World!!!!!</h1>"
-
-@app.route("/information", methods=["GET","POST"])
-def information():
-	return {
-		"year": 2024,
-		"description": "Esto es un endpoint secundario",
-	}
-
-@app.route("/echo", methods=["POST"])
-def echo():
-    request_body = request.json
-    return request_body
 
 if __name__ ==   "__main__":
     app.run(host="localhost", debug = True)
