@@ -14,5 +14,6 @@ def load_data(data_file_path):
         return data
     except Exception as ex:
         print(f'File error: {ex}')
+        return []
     
     

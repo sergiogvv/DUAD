@@ -40,5 +40,11 @@
     "id": 66000086,
     "status": "in progress",
     "title": "disk clean"
+  },
+  {
+    "id": 1616,
+    "title": "Remove temp files",
+    "description": "Remove temporary files that are no longer needed",
+    "status": "pending"
   }
 ]

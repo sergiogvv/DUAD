@@ -362,5 +362,21 @@
   {
     "Exception": "id within request body already exists, please fill in request body id with a different value",
     "Time stamp": "2025-09-17T20:33:12.800956+00:00"
+  },
+  {
+    "Exception": "'NoneType' object is not iterable",
+    "Time stamp": "2025-09-17T21:07:59.531599+00:00"
+  },
+  {
+    "Exception": "'NoneType' object is not iterable",
+    "Time stamp": "2025-09-17T21:13:03.022620+00:00"
+  },
+  {
+    "Exception": "Task not found",
+    "Time stamp": "2025-09-17T21:19:36.648771+00:00"
+  },
+  {
+    "Exception": "id within request body already exists, please fill in request body id with a different value",
+    "Time stamp": "2025-09-17T21:20:02.026462+00:00"
   }
 ]
