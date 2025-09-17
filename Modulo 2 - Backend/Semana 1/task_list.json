@@ -16,5 +16,29 @@
     "title": "Disk Defrag",
     "description": "Arrange disk partitions to speed up CRUD transactions",
     "status": "pending"
+  },
+  {
+    "id": 987456,
+    "title": "Remove temp files",
+    "description": "Remove temporary files that are no longer needed",
+    "status": "pending"
+  },
+  {
+    "id": 666,
+    "title": "Remove temp files",
+    "description": "Remove temporary files that are no longer needed",
+    "status": "pending"
+  },
+  {
+    "id": 6686,
+    "title": "Remove temp files",
+    "description": "Remove temporary files that are no longer needed",
+    "status": "pending"
+  },
+  {
+    "description": "Remove unnecessary files",
+    "id": 66000086,
+    "status": "in progress",
+    "title": "disk clean"
   }
 ]

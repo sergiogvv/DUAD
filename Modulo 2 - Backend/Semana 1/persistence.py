@@ -12,6 +12,7 @@ def load_data(data_file_path):
         with open(data_file_path, 'r') as f:
                 data = jsonload(f)
         return data
-    except:
-        return []
+    except Exception as ex:
+        print(f'File error: {ex}')
+    
     
