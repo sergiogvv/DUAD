@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
 from os import path
 from persistence import load_data, save_data
-from utilities import find_task_file_index, api_response, only_valid_attributes, log_exception,validate_attributes_are_in_body, validate_no_empty_attributes, validate_task_id, save_json_task, validate_status, delete_task_from_json, update_task_json
+from utilities import find_task_file_index, api_response, only_valid_attributes, log_exception,validate_attributes_are_in_body, validate_no_empty_attributes, validate_task_id, save_json_task, validate_status, delete_task_from_json, update_task_json, task_list_path
 
 app = Flask(__name__)
-task_list_path= path.join(path.dirname(__file__), r'task_list.json')
 
 
 #CREATE

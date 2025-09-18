@@ -5,14 +5,9 @@ from persistence import load_data, save_data
 from datetime import datetime, timezone
 
 status_list = ["pending", "in progress","complete"]
-
-task_list = [] #initialize task list before loading file
 task_list_path= path.join(path.dirname(__file__), r'task_list.json')
-task_list= load_data(task_list_path)
-
-error_list = [] #initialize error_list before loading file
 error_log_path= path.join(path.dirname(__file__), r'errorlog.dat')
-error_list= load_data(error_log_path)
+
 
 def validate_attributes_are_in_body(request_body):
     required_keys = ("id","title", "description", "status")
@@ -68,6 +63,7 @@ def find_task_file_index(task_id): # used for PUT (pending test for PATCH) to fi
     raise ValueError('Task not found')
 
 def update_task_json(file_index,request_body):
+    task_list= load_data(task_list_path)
     task_list[file_index] = request_body
     json_tasks = jsondumps(task_list, indent=2)
     save_data(json_tasks, task_list_path)
@@ -85,6 +81,7 @@ def delete_task_from_json(task_id): #delete task from json file
 
 
 def log_exception(ex): #log for debugging
+    error_list= load_data(error_log_path)
     ex_log_dict = {
         "Exception": str(ex),
         "Time stamp": datetime.now(timezone.utc).isoformat()
