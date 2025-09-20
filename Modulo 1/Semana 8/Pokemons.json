@@ -49,18 +49,18 @@
     },
     {
         "name": {
-            "english": "Bulbasaur"
+            "english": "caca"
         },
         "type": [
-            "Grass"
+            "copro"
         ],
         "base": {
-            "HP": 45,
-            "Attack": 49,
-            "Defense": 49,
-            "Sp. Attack": 54,
-            "Sp. Defense": 54,
-            "Speed": 65
+            "HP": 100,
+            "Attack": 100,
+            "Defense": 100,
+            "Sp. Attack": 100,
+            "Sp. Defense": 100,
+            "Speed": 100
         }
     }
 ]
