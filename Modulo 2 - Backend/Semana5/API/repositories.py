@@ -9,7 +9,8 @@ class UserRepository:
             "email": record[2],
             "username": record[3],
             "password": record[4],
-            "account_status": record[5]
+            "DOB": record[5],
+            "account_status": record[6]
         }
 
     def get_all(self):
@@ -22,6 +23,20 @@ class UserRepository:
         except Exception as error:
             print("Error getting all records from the database: ", error)
             return False
+        
+    def create(self, full_name, email, username, password, DOB, account_status):
+        try:
+            self.db_manager.execute_query(
+                "INSERT INTO lyfter_car_rental.users (full_name, email, username, password, DOB, account_status) VALUES (%s, %s, %s, %s, %s, %s)",
+                (full_name, email, username, password, DOB, account_status)
+            )
+            print("Record inserted successfully")
+            return True
+        except Exception as error:
+            print("Error inserting record into the database: ", error)
+            return False
+    
+
 
 class CarRepository:
     def __init__(self, db_manager):
@@ -45,6 +60,18 @@ class CarRepository:
             return formatted_results
         except Exception as error:
             print("Error getting all records from the database: ", error)
+            return False
+        
+    def create(self, car_make, model, year):
+        try:
+            self.db_manager.execute_query(
+                "INSERT INTO lyfter_car_rental.cars (car_make, model, year) VALUES (%s, %s, %s)",
+                (car_make, model, year)
+            )
+            print("Record inserted successfully")
+            return True
+        except Exception as error:
+            print("Error inserting record into the database: ", error)
             return False
     
 
@@ -71,5 +98,22 @@ class RentalRepository:
         except Exception as error:
             print("Error getting all records from the database: ", error)
             return False
+        
+    def create(self, rental_status,car_id,user_id):
+        try:
+            self.db_manager.execute_query(
+                "INSERT INTO lyfter_car_rental.rentals (rental_status,car_id,user_id) VALUES (%s, %s, %s)",
+                (rental_status,car_id,user_id)
+            )
+            self.db_manager.execute_query(
+                "UPDATE lyfter_car_rental.cars SET status = 'unavailable' WHERE id = %s",
+                (car_id)
+            )
+            print("Record inserted successfully")
+            return True
+        except Exception as error:
+            print("Error inserting record into the database: ", error)
+            return False
+    
 
 
