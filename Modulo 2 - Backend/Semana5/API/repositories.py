@@ -13,18 +13,7 @@ class UserRepository:
             "account_status": record[6]
         }
 
-    def get_all(self):
-        try:
-            results = self.db_manager.execute_query(
-                "SELECT * FROM lyfter_car_rental.users;"
-            )
-            formatted_results = [self._format_record(result) for result in results]
-            return formatted_results
-        except Exception as error:
-            print("Error getting all records from the database: ", error)
-            return False
-        
-    def create(self, full_name, email, username, password, DOB, account_status):
+    def create(self, full_name, email, username, password, DOB, account_status): #Crear un usuario nuevo
         try:
             self.db_manager.execute_query(
                 "INSERT INTO lyfter_car_rental.users (full_name, email, username, password, DOB, account_status) VALUES (%s, %s, %s, %s, %s, %s)",
@@ -35,8 +24,53 @@ class UserRepository:
         except Exception as error:
             print("Error inserting record into the database: ", error)
             return False
-    
 
+    def get_all(self): #Listar todos los usuarios
+        try:
+            results = self.db_manager.execute_query(
+                "SELECT * FROM lyfter_car_rental.users;"
+            )
+            formatted_results = [self._format_record(result) for result in results]
+            return formatted_results
+        except Exception as error:
+            print("Error getting all records from the database: ", error)
+            return False
+        
+    def get_by_username(self, username): #El listado de usuarios debe ser capaz de filtrar por username
+        try:
+            results = self.db_manager.execute_query(
+                "SELECT * FROM lyfter_car_rental.users WHERE username = %s;",
+                (username)
+            )
+            formatted_result = [self._format_record(result) for result in results]
+            return formatted_result
+        except Exception as error:
+            print("Error getting user from the database: ", error)
+            return False
+
+    def change_account_status(self, id, account_status): #Cambiar el estado de un usuario
+        try:
+            self.db_manager.execute_query(
+                "UPDATE lyfter_car_rental.users SET account_status = %s WHERE id = %s)",
+                (account_status, id)
+            )
+            print(f'Account status updated to {account_status} for user {id}')
+            return True
+        except Exception as error:
+            print("Error updating user status: ", error)
+            return False
+    
+    def flag_as_defaulted(self, id, account_status='defaulted'): #Flagear un usuario como moroso
+        try:
+            self.db_manager.execute_query(
+                "UPDATE lyfter_car_rental.users SET account_status = %s WHERE id = %s)",
+                (account_status, id)
+            )
+            print(f'User {id} flagged as {account_status}')
+            return True
+        except Exception as error:
+            print("Error updating user status: ", error)
+            return False
 
 class CarRepository:
     def __init__(self, db_manager):
@@ -51,18 +85,7 @@ class CarRepository:
             "status": record[4]
         }
 
-    def get_all(self):
-        try:
-            results = self.db_manager.execute_query(
-                "SELECT * FROM lyfter_car_rental.cars;"
-            )
-            formatted_results = [self._format_record(result) for result in results]
-            return formatted_results
-        except Exception as error:
-            print("Error getting all records from the database: ", error)
-            return False
-        
-    def create(self, car_make, model, year):
+    def create(self, car_make, model, year): #Crear un automovil nuevo
         try:
             self.db_manager.execute_query(
                 "INSERT INTO lyfter_car_rental.cars (car_make, model, year) VALUES (%s, %s, %s)",
@@ -73,7 +96,42 @@ class CarRepository:
         except Exception as error:
             print("Error inserting record into the database: ", error)
             return False
+        
+    def get_all(self): #Listar todos los automoviles
+        try:
+            results = self.db_manager.execute_query(
+                "SELECT * FROM lyfter_car_rental.cars;"
+            )
+            formatted_results = [self._format_record(result) for result in results]
+            return formatted_results
+        except Exception as error:
+            print("Error getting all records from the database: ", error)
+            return False
+        
+    def get_by_model(self, model): #El listado de autos debe ser capaz de filtrar por modelo
+        try:
+            results = self.db_manager.execute_query(
+                "SELECT * FROM lyfter_car_rental.cars WHERE model = %s;"
+                (model)
+            )
+            formatted_result = [self._format_record(result) for result in results]
+            return formatted_result
+        except Exception as error:
+            print("Error getting a car from the database: ", error)
+            return False
     
+    def change_status(self, id, status): #Cambiar el estado de un automovil
+        try:
+            self.db_manager.execute_query(
+                "UPDATE lyfter_car_rental.cars SET status = %s WHERE id = %s)",
+                (status, id)
+            )
+            print(f'Car status updated to {status} for car {id}')
+            return True
+        except Exception as error:
+            print("Error updating car status: ", error)
+            return False       
+
 
 class RentalRepository:
     def __init__(self, db_manager):
@@ -88,18 +146,7 @@ class RentalRepository:
             "user_id": record[4]
         }
 
-    def get_all(self):
-        try:
-            results = self.db_manager.execute_query(
-                "SELECT * FROM lyfter_car_rental.rentals;"
-            )
-            formatted_results = [self._format_record(result) for result in results]
-            return formatted_results
-        except Exception as error:
-            print("Error getting all records from the database: ", error)
-            return False
-        
-    def create(self, rental_status,car_id,user_id):
+    def create(self, rental_status,car_id,user_id): #Crear un alquiler nuevo
         try:
             self.db_manager.execute_query(
                 "INSERT INTO lyfter_car_rental.rentals (rental_status,car_id,user_id) VALUES (%s, %s, %s)",
@@ -114,6 +161,54 @@ class RentalRepository:
         except Exception as error:
             print("Error inserting record into the database: ", error)
             return False
-    
 
+    def get_all(self):
+        try:
+            results = self.db_manager.execute_query(
+                "SELECT * FROM lyfter_car_rental.rentals;"
+            )
+            formatted_results = [self._format_record(result) for result in results]
+            return formatted_results
+        except Exception as error:
+            print("Error getting all records from the database: ", error)
+            return False
 
+    def get_by_rental_status(self, rental_status): #El listado de alquileres debe ser capaz de filtrar por estado
+        try:
+            results = self.db_manager.execute_query(
+                "SELECT * FROM lyfter_car_rental.rentals WHERE rental_status = %s;"
+                (rental_status)
+            )
+            formatted_results = [self._format_record(result) for result in results]
+            return formatted_results
+        except Exception as error:
+            print("Error getting rentals from the database: ", error)
+            return False
+        
+    def complete_rental(self, id): #Completar un alquiler
+        try:
+            self.db_manager.execute_query(
+                "UPDATE lyfter_car_rental.rentals SET rental_status = 'returned' WHERE id = %s",
+                (id)
+            )
+            self.db_manager.execute_query(
+                "UPDATE lyfter_car_rental.cars SET status = 'available' WHERE id = (SELECT car_id FROM lyfter_car_rental.rentals WHERE id = %s",
+                (id)
+            )
+            print("Rental has been completed successfully")
+            return True
+        except Exception as error:
+            print("Error, unable to complete rental: ", error)
+            return False
+        
+    def change_rental_status(self, id, rental_status = 'in use'): #Cambiar el estado de un alquiler
+        try:
+            self.db_manager.execute_query(
+                "UPDATE lyfter_car_rental.rentals SET rental_status = %s WHERE id = %s",
+                (rental_status, id)
+            )
+            print(f'Rental id {id} has been updated to {rental_status}')
+            return True
+        except Exception as error:
+            print("Error, unable to update rental status: ", error)
+            return False
