@@ -39,7 +39,17 @@ class UserRepository:
         except Exception as error:
             print("Error getting all records from the database: ", error)
             return False
-        
+
+    def get_by_column(self,column,value):
+        try:
+            query = f"SELECT * FROM lyfter_car_rental.users WHERE {column} = %s;"
+            results = self.db_manager.execute_query(query,(value,))
+            formatted_results = [self._format_record(result) for result in results]
+            return formatted_results
+        except Exception as error:
+            print("Error getting records from the database: ", error)
+            return False
+
     def get_by_id(self, id):
         try:
             results = self.db_manager.execute_query(
@@ -139,7 +149,17 @@ class CarRepository:
         except Exception as error:
             print("Error getting all records from the database: ", error)
             return False
-        
+
+    def get_by_column(self,column,value):
+        try:
+            query = f"SELECT * FROM lyfter_car_rental.cars WHERE {column} = %s;"
+            results = self.db_manager.execute_query(query,(value,))
+            formatted_results = [self._format_record(result) for result in results]
+            return formatted_results
+        except Exception as error:
+            print("Error getting records from the database: ", error)
+            return False
+
     def get_by_model(self, model): #El listado de autos debe ser capaz de filtrar por modelo
         try:
             results = self.db_manager.execute_query(
@@ -220,6 +240,16 @@ class RentalRepository:
             return formatted_results
         except Exception as error:
             print("Error getting all records from the database: ", error)
+            return False
+
+    def get_by_column(self,column,value):
+        try:
+            query = f"SELECT * FROM lyfter_car_rental.rentals WHERE {column} = %s;"
+            results = self.db_manager.execute_query(query,(value,))
+            formatted_results = [self._format_record(result) for result in results]
+            return formatted_results
+        except Exception as error:
+            print("Error getting records from the database: ", error)
             return False
 
     def get_by_rental_status(self, rental_status): #El listado de alquileres debe ser capaz de filtrar por estado

@@ -2,7 +2,7 @@ from db import PgManager
 from repositories import UserRepository, CarRepository, RentalRepository
 from flask import Flask, request, jsonify
 from os import path
-from logic import api_response, validate_user_payload, check_result_success, check_car_attributes, validate_rental_payload, is_valid_account_status, is_valid_car_status, check_if_rental_id_exists, is_valid_rental_status, check_if_user_id_exists, check_if_car_id_exists
+from logic import api_response, validate_user_payload, check_result_success, check_car_attributes, validate_rental_payload, is_valid_account_status, is_valid_car_status, check_if_rental_id_exists, is_valid_rental_status, check_if_user_id_exists, check_if_car_id_exists, valid_user_columns, valid_car_columns, valid_rental_columns
 
 
 app = Flask(__name__)
@@ -154,29 +154,49 @@ def user_defaulted(user_id): #Flagear un usuario como moroso
 def get_users(): #Listar todos los usuarios
     try:
         user_repo = UserRepository(db_manager)
-
-        
-        return api_response(user_repo.get_all(),"users")
+        if not request.args:
+            return api_response(user_repo.get_all(), "users")  
+        column, value = next(iter(request.args.items()))
+        valid_user_columns(column)
+        result = user_repo.get_by_column(column, value)
+        return api_response(result,"users")
+    except ValueError as ex:
+        return api_response(message=str(ex)), 400
     except Exception as ex:
-        return api_response(message= "Unexpected error"), 500 #unexpected generic error with generic message
+        print(f"Unexpected error: {ex}")
+        return api_response(message="Unexpected error"), 500 #unexpected generic error with generic message
 
 @app.route("/car", methods = ["GET"])
-def get_all_cars(): #Listar todos los automoviles
+def get_cars(): #Listar todos los automoviles
     try:
-        request_body = request.json
         car_repo = CarRepository(db_manager)
-        return api_response(car_repo.get_all(),"users")
+        if not request.args:
+            return api_response(car_repo.get_all(), "cars") 
+        column, value = next(iter(request.args.items()))
+        valid_car_columns(column)
+        result = car_repo.get_by_column(column, value)
+        return api_response(result,"cars")
+    except ValueError as ex:
+        return api_response(message=str(ex)), 400
     except Exception as ex:
-        return api_response(message= "Unexpected error"), 500 #unexpected generic error with generic message
+        print(f"Unexpected error: {ex}")
+        return api_response(message="Unexpected error"), 500 #unexpected generic error with generic message
 
 @app.route("/rental", methods = ["GET"])
-def get_all_rentals(): #Listar todos los alquileres
+def get_rentals(): #Listar todos los alquileres
     try:
-        request_body = request.json
         rental_repo = RentalRepository(db_manager)
-        return api_response(rental_repo.get_all(),"users")
+        if not request.args:
+            return api_response(rental_repo.get_all(), "rentals") 
+        column, value = next(iter(request.args.items()))
+        valid_rental_columns(column)
+        result = rental_repo.get_by_column(column, value)
+        return api_response(result,"rentals")
+    except ValueError as ex:
+        return api_response(message=str(ex)), 400
     except Exception as ex:
-        return api_response(message= "Unexpected error"), 500 #unexpected generic error with generic message
+        print(f"Unexpected error: {ex}")
+        return api_response(message="Unexpected error"), 500 #unexpected generic error with generic message
 
 
 if __name__ ==   "__main__":

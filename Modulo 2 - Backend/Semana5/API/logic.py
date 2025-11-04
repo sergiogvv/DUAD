@@ -128,3 +128,18 @@ def is_valid_rental_status(rental_status):
     if rental_status.upper() not in allowed_status:
         raise ValueError("Invalid status")
     return True 
+
+def valid_user_columns(column):
+    VALID_COLUMNS = {"id", "full_name", "email", "username", "DOB", "account_status"}
+    if column not in VALID_COLUMNS:
+        raise ValueError(f"Invalid column: {column}")
+    
+def valid_car_columns(column):
+    VALID_COLUMNS = {"id", "car_make", "model", "year","status"}
+    if column not in VALID_COLUMNS:
+        raise ValueError(f"Invalid column: {column}")
+
+def valid_rental_columns(column):
+    VALID_COLUMNS = {"id", "rental_date", "rental_status", "car_id","user_id"}
+    if column not in VALID_COLUMNS:
+        raise ValueError(f"Invalid column: {column}")
