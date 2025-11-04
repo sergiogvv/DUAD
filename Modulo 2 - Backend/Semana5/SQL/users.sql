@@ -2,7 +2,7 @@ CREATE TABLE lyfter_car_rental.users
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 100 ),
 	full_name character varying(50) NOT NULL,
-    email character varying(30) NOT NULL,
+    email character varying(50) UNIQUE NOT NULL,
     username character varying(30) NOT NULL,
     password character varying(25) NOT NULL,
 	DOB date NOT NULL,

@@ -12,7 +12,7 @@ class PgManager:
         self.connection = self.create_connection(db_name, user, password, host, port)
         if self.connection:
             self.cursor = self.connection.cursor()
-            print("Connection created succesfully")
+            print(f'Connection created succesfully to {db_name}')
 
     def create_connection(self, db_name, user, password, host, port):
         try:
@@ -35,7 +35,7 @@ class PgManager:
             self.connection.close()
         print("Connection closed")
 
-    def execute_query(self, query, *args):
+    def execute_query(self, query, args=None):
         self.cursor.execute(query, args)
         self.connection.commit()
 
