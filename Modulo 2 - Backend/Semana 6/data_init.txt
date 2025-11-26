@@ -1,0 +1,64 @@
+
+with engine.connect() as conn:
+    result = conn.execute(
+        insert(user_table),
+        [
+            {"full_name": "Donny Gomar","user_name": "dgomar0","password": "mN8%qDrx"}, 
+            {"full_name": "Carling Gerardin","user_name": "cgerardin1","password": "xR8_jE6\"C"}, 
+            {"full_name": "Elke Laughlin","user_name": "elaughlin2","password": "nE4({fl%<&f|"}, 
+            {"full_name": "Kelsi Mularkey","user_name": "kmularkey3","password": "fO8.8Dn8)!9i~Xv"}, 
+            {"full_name": "Dov Marian","user_name": "dmarian4","password": "zJ9.P(p1K+M*>"}, 
+            {"full_name": "Alberta Winchcomb","user_name": "awinchcomb5","password": "rD3<\"x18o=ISf6"}, 
+            {"full_name": "Lizzie Siman","user_name": "lsiman6","password": "fN5.?|jlGsF#>*"}, 
+            {"full_name": "Carena Bakeup","user_name": "cbakeup7","password": "bW7!N%bU@KiJ"}, 
+            {"full_name": "Lissi Jennions","user_name": "ljennions8","password": "zN4`.bu.>R"}, 
+            {"full_name": "Jessika Fancet","user_name": "jfancet9","password": "qT3=A.N/"}
+        ]
+    )
+    conn.commit()
+
+with engine.connect() as conn:
+    result = conn.execute(
+        insert(cars_table),
+        [
+            {"car_make": "Chevrolet", "model": "Corvette","year": 1993}, 
+            {"car_make": "BMW","model": "Z4 M","year": 2006}, 
+            {"car_make": "Hyundai","model": "Tiburon","year": 2007}, 
+            {"car_make": "Volkswagen","model": "Jetta","year": 2004}, 
+            {"car_make": "Maserati","model": "228","year": 1990}, 
+            {"car_make": "Ford","model": "E-Series","year": 2002}, 
+            {"car_make": "Buick","model": "Park Avenue","year": 2000}, 
+            {"car_make": "Chevrolet","model": "HHR","year": 2009}, 
+            {"car_make": "Dodge","model": "Caliber","year": 2012}, 
+            {"car_make": "Dodge","model": "Ram 1500","year": 2009}
+        ]
+    )
+    conn.commit()
+
+with engine.connect() as conn:
+    result = conn.execute(
+        insert(address_table),
+        [
+            {"user_id": 1,"address": "9775, Kensington, Indianapolis, IN, 46202"}, 
+            {"user_id": 2,"address": "6985, Boyd, Saint Petersburg, FL, 33742"}, 
+            {"user_id": 3,"address": "7265, Twin Pines, Olympia, WA, 98516"}, 
+            {"user_id": 4,"address": "6718, Summit, Longview, TX, 75605"}, 
+            {"user_id": 5,"address": "4514, Charing Cross, Anniston, AL, 36205"}, 
+            {"user_id": 6,"address": "1510, Becker, Tampa, FL, 33694"}, 
+            {"user_id": 7,"address": "5675, Vernon, Cleveland, OH, 44177"}, 
+            {"user_id": 8,"address": "2444, Mendota, Gadsden, AL, 35905"}, 
+            {"user_id": 9,"address": "788, Superior, Lafayette, LA, 70505"}, 
+            {"user_id": 10,"address": 861, Village, Canton, OH, 44710,}            
+        ]
+    )
+    conn.commit()
+
+    
+
+
+
+
+
+
+
+
