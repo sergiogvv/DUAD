@@ -1,5 +1,7 @@
 from db import engine
-from repos import UserRepository, CarRepository, AddressRepository
+from user_repos import UserRepository
+from car_repos import CarRepository
+from address_repos import AddressRepository
 from flask import Flask, request, jsonify
 from logic import api_response, validate_user_payload, check_result_success, check_car_attributes, check_if_user_id_exists, check_if_car_id_exists, valid_user_columns, valid_car_columns, valid_address_columns, validate_address_payload, check_if_user_exists, check_if_car_exists, check_if_address_exists
 
