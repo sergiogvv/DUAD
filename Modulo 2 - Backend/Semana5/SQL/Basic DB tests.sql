@@ -1,6 +1,6 @@
 -- 1. Un script que agregue un usuario nuevo
 
-INSERT INTO lyfter_car_rental.users (full_name, email, username, password, DOB, account_status) VALUES ('Sergio Velasqez', 'sergiogvv@gmail.com', 'sergiogvv666', 'wO3~xWNB40x=(7UnLx', '1985-03-20', 'active');
+INSERT INTO lyfter_car_rental.users (full_name, email, username, password, DOB, account_status) VALUES ('Tuco Salamanca', 'tuco.salamanca@elmichoacano.com', 'mrsalamanca70', 'nC0%G/Q4DUWxxrd.j4nUtM#a', '1970-03-22', 'active');
 
 -- 2. Un script que agregue un automovil nuevo
 
